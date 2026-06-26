@@ -1,8 +1,8 @@
 class LoginUser {
-  constructor({ userRepository, passwordHasher, sessionManager }) {
+  constructor({ userRepository, passwordHasher, tokenService }) {
     this.userRepository = userRepository;
     this.passwordHasher = passwordHasher;
-    this.sessionManager = sessionManager;
+    this.tokenService = tokenService;
   }
 
   async execute({ email, password }) {
@@ -16,7 +16,11 @@ class LoginUser {
       throw new Error("이메일 또는 비밀번호가 올바르지 않습니다.");
     }
 
-    const sessionId = this.sessionManager.createSession(user.id);
+    const accessToken = this.tokenService.signToken({
+      userId: user.id,
+      username: user.username,
+      email: user.email,
+    });
 
     return {
       user: {
@@ -24,7 +28,7 @@ class LoginUser {
         username: user.username,
         email: user.email,
       },
-      sessionId,
+      accessToken,
     };
   }
 }

@@ -1,14 +1,10 @@
 const express = require("express");
 
-function createCommunityRoutes() {
+function createCommunityRoutes({ communityController }) {
   const router = express.Router();
 
-  router.get("/", (req, res) => {
-    res.json({
-      success: true,
-      data: { items: [], message: "community ready" },
-    });
-  });
+  router.get("/", communityController.list);
+  router.post("/", communityController.create);
 
   return router;
 }

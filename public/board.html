@@ -2,7 +2,6 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Troll Club - Board</title>
     <link rel="stylesheet" href="style.css">
 </head>
@@ -17,9 +16,20 @@
     
     <h1>Board</h1>
     
+    <div class="card" style="margin-bottom: 20px;">
+        <h3>새 글 작성</h3>
+        <form onsubmit="createPost(event)" class="form-layout">
+            <input type="text" id="post-title" placeholder="제목 (2자 이상)" required>
+            <textarea id="post-content" placeholder="내용을 입력해 (5자 이상)" rows="3" required></textarea>
+            <button type="submit" class="btn">작성하기</button>
+        </form>
+    </div>
+
     <div class="card">
-        <h3>Troll Club Board</h3>
-        <p>중요한 공지사항이나 다양한 정보 게시글들이 올라오는 게시판입니다.</p>
+        <h3>게시글 목록</h3>
+        <div id="post-list">
+            로딩 중...
+        </div>
     </div>
 
     <script src="app.js"></script>

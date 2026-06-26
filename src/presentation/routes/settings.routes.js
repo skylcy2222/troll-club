@@ -1,14 +1,10 @@
 const express = require("express");
 
-function createSettingsRoutes() {
+function createSettingsRoutes({ settingsController }) {
   const router = express.Router();
 
-  router.get("/", (req, res) => {
-    res.json({
-      success: true,
-      data: { theme: "monochrome" },
-    });
-  });
+  router.get("/", settingsController.get);
+  router.put("/", settingsController.update);
 
   return router;
 }

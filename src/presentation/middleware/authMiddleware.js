@@ -1,21 +1,25 @@
-function createAuthMiddleware({ sessionManager }) {
+function createAuthMiddleware({ tokenService }) {
   return function authMiddleware(req, res, next) {
-    const sessionId = req.cookies?.sid;
-    const session = sessionManager.getSession(sessionId);
+    const header = req.headers.authorization || "";
+    const [, token] = header.split(" ");
 
-    if (!session) {
+    if (!token) {
       return res.status(401).json({
         success: false,
-        message: "로그인이 필요합니다.",
+        message: "토큰이 필요합니다.",
       });
     }
 
-    req.auth = {
-      userId: session.userId,
-      sessionId,
-    };
-
-    next();
+    try {
+      const decoded = tokenService.verifyToken(token);
+      req.auth = decoded;
+      next();
+    } catch (error) {
+      return res.status(401).json({
+        success: false,
+        message: "유효하지 않은 토큰입니다.",
+      });
+    }
   };
 }
 

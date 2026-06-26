@@ -1,14 +1,12 @@
 class AuthController {
-  constructor({ registerUser, loginUser, userRepository, sessionManager }) {
+  constructor({ registerUser, loginUser, userRepository }) {
     this.registerUser = registerUser;
     this.loginUser = loginUser;
     this.userRepository = userRepository;
-    this.sessionManager = sessionManager;
 
     this.register = this.register.bind(this);
     this.login = this.login.bind(this);
     this.me = this.me.bind(this);
-    this.logout = this.logout.bind(this);
   }
 
   async register(req, res, next) {
@@ -24,14 +22,10 @@ class AuthController {
     try {
       const result = await this.loginUser.execute(req.body);
 
-      res.cookie("sid", result.sessionId, {
-        httpOnly: true,
-        sameSite: "lax",
-        secure: false,
-        maxAge: 1000 * 60 * 60 * 24 * 7,
+      res.json({
+        success: true,
+        data: result,
       });
-
-      res.json({ success: true, data: result.user });
     } catch (error) {
       next(error);
     }
@@ -59,14 +53,6 @@ class AuthController {
     } catch (error) {
       next(error);
     }
-  }
-
-  async logout(req, res) {
-    const sid = req.cookies?.sid;
-    if (sid) this.sessionManager.destroySession(sid);
-
-    res.clearCookie("sid");
-    res.json({ success: true, data: { logout: true } });
   }
 }
 

@@ -1,10 +1,16 @@
 const db = require("../infrastructure/database/db");
+
 const UserRepository = require("../infrastructure/database/repositories/UserRepository");
 const PostRepository = require("../infrastructure/database/repositories/PostRepository");
+const CommunityRepository = require("../infrastructure/database/repositories/CommunityRepository");
+
 const PasswordPolicy = require("../domain/auth/PasswordPolicy");
 const BoardPolicy = require("../domain/board/BoardPolicy");
+const CommunityPolicy = require("../domain/community/CommunityPolicy");
+
 const PasswordHasher = require("../infrastructure/security/PasswordHasher");
-const SessionManager = require("../infrastructure/security/SessionManager");
+const tokenService = require("../infrastructure/external/jwt");
+const RiskEngine = require("../infrastructure/security/RiskEngine");
 
 const RegisterUser = require("../application/auth/RegisterUser");
 const LoginUser = require("../application/auth/LoginUser");
@@ -14,6 +20,7 @@ const DeletePost = require("../application/board/DeletePost");
 
 const AuthController = require("../presentation/controllers/auth.controller");
 const BoardController = require("../presentation/controllers/board.controller");
+const CommunityController = require("../presentation/controllers/community.controller");
 
 const createAuthMiddleware = require("../presentation/middleware/authMiddleware");
 const createAuthRoutes = require("../presentation/routes/auth.routes");
@@ -24,15 +31,17 @@ const createSettingsRoutes = require("../presentation/routes/settings.routes");
 function bootstrap() {
   const userRepository = new UserRepository(db);
   const postRepository = new PostRepository(db);
+  const communityRepository = new CommunityRepository(db);
 
   const passwordPolicy = new PasswordPolicy();
   const boardPolicy = new BoardPolicy();
+  const communityPolicy = new CommunityPolicy();
 
   const passwordHasher = new PasswordHasher({
     pepper: process.env.PEPPER || "dev-pepper",
   });
 
-  const sessionManager = new SessionManager();
+  const riskEngine = new RiskEngine();
 
   const registerUser = new RegisterUser({
     userRepository,
@@ -43,7 +52,7 @@ function bootstrap() {
   const loginUser = new LoginUser({
     userRepository,
     passwordHasher,
-    sessionManager,
+    tokenService,
   });
 
   const createPost = new CreatePost({
@@ -64,7 +73,6 @@ function bootstrap() {
     registerUser,
     loginUser,
     userRepository,
-    sessionManager,
   });
 
   const boardController = new BoardController({
@@ -73,14 +81,22 @@ function bootstrap() {
     deletePost,
   });
 
-  const authMiddleware = createAuthMiddleware({ sessionManager });
+  const communityController = new CommunityController({
+    communityRepository,
+    communityPolicy,
+  });
+
+  const authMiddleware = createAuthMiddleware({ tokenService });
 
   return {
     routers: {
       auth: createAuthRoutes({ authController, authMiddleware }),
       board: createBoardRoutes({ boardController, authMiddleware }),
-      community: createCommunityRoutes(),
+      community: createCommunityRoutes({ communityController }),
       settings: createSettingsRoutes(),
+    },
+    services: {
+      riskEngine,
     },
   };
 }
