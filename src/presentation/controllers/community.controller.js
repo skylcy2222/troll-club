@@ -5,6 +5,23 @@ class CommunityController {
 
     this.list = this.list.bind(this);
     this.create = this.create.bind(this);
+    this.info = this.info.bind(this);
+  }
+
+  async info(req, res, next) {
+    try {
+      const communities = this.communityRepository.findAll();
+
+      res.json({
+        success: true,
+        data: {
+          communityName: "Troll Club",
+          membersCount: communities.length,
+        },
+      });
+    } catch (error) {
+      next(error);
+    }
   }
 
   async list(req, res, next) {

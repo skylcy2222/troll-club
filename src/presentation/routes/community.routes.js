@@ -5,6 +5,7 @@ function createCommunityRoutes({ communityController }) {
 
   router.get("/", communityController.list);
   router.post("/", communityController.create);
+  router.get("/info", communityController.info);
 
   return router;
 }

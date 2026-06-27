@@ -1,48 +1,38 @@
-<div class="card">
-    <h3>Troll Club Login</h3>
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Troll Club - Home</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav>
+        <a href="index.html" class="active">Home</a>
+        <a href="community.html">Community</a>
+        <a href="board.html">Board</a>
+        <a href="dashboard.html">Dashboard</a>
+        <a href="settings.html">Settings</a>
+    </nav>
+    
+    <h1>Home</h1>
+    
+    <div class="card">
+        <h3>Troll Club Login</h3>
+        <p id="user-display" style="color: var(--accent); font-weight: bold;"></p>
+        
+        <form id="auth-form" class="form-layout">
+            <input type="text" id="username" placeholder="닉네임" required>
+            <input type="email" id="email" placeholder="이메일" required>
+            <input type="password" id="password" placeholder="비밀번호" required>
+            
+            <div style="display:flex; gap:10px">
+                <button type="submit" value="login" class="btn">로그인</button>
+                <button type="submit" value="register" class="btn outline">회원가입</button>
+            </div>
+        </form>
+    </div>
 
-    <p id="user-display" style="color: var(--accent); font-weight: bold;"></p>
-
-    <form id="auth-form" class="form-layout">
-
-        <input
-            type="text"
-            id="username"
-            placeholder="닉네임"
-            required
-        >
-
-        <input
-            type="email"
-            id="email"
-            placeholder="이메일"
-            required
-        >
-
-        <input
-            type="password"
-            id="password"
-            placeholder="비밀번호"
-            required
-        >
-
-        <div style="display:flex;gap:10px">
-
-            <button
-                type="submit"
-                value="login"
-                class="btn">
-                로그인
-            </button>
-
-            <button
-                type="submit"
-                value="register"
-                class="btn outline">
-                회원가입
-            </button>
-
-        </div>
-
-    </form>
-</div>
+    <script src="app.js"></script>
+</body>
+</html>

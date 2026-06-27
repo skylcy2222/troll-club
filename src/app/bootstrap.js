@@ -21,6 +21,7 @@ const DeletePost = require("../application/board/DeletePost");
 const AuthController = require("../presentation/controllers/auth.controller");
 const BoardController = require("../presentation/controllers/board.controller");
 const CommunityController = require("../presentation/controllers/community.controller");
+const SettingsController = require("../presentation/controllers/settings.controller");
 
 const createAuthMiddleware = require("../presentation/middleware/authMiddleware");
 const createAuthRoutes = require("../presentation/routes/auth.routes");
@@ -86,6 +87,8 @@ function bootstrap() {
     communityPolicy,
   });
 
+  const settingsController = new SettingsController();
+
   const authMiddleware = createAuthMiddleware({ tokenService });
 
   return {
@@ -93,7 +96,7 @@ function bootstrap() {
       auth: createAuthRoutes({ authController, authMiddleware }),
       board: createBoardRoutes({ boardController, authMiddleware }),
       community: createCommunityRoutes({ communityController }),
-      settings: createSettingsRoutes(),
+      settings: createSettingsRoutes({ settingsController }),
     },
     services: {
       riskEngine,

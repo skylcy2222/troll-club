@@ -81,6 +81,11 @@ function updateNav() {
   }
 }
 
+function unwrapResponse(response) {
+  if (!response) return null;
+  return response.data ?? response;
+}
+
 // [Home] 회원가입 & 로그인
 function initAuth() {
   const form = document.getElementById("auth-form");
@@ -109,13 +114,23 @@ function initAuth() {
         body: JSON.stringify(body),
       });
 
+      const data = unwrapResponse(response);
+
       if (action === "register") {
-        alert(response.message || "회원가입 성공! 이제 로그인해.");
+        alert(response?.message || data?.message || "회원가입 성공! 이제 로그인해.");
+        form.reset();
         return;
       }
 
-      localStorage.setItem("jwt_token", response.data.accessToken);
-      localStorage.setItem("username", response.data.user.username);
+      const token = data?.accessToken || data?.token;
+      const userName = data?.user?.username || username || "";
+
+      if (!token) {
+        throw new Error("로그인 토큰이 없습니다.");
+      }
+
+      localStorage.setItem("jwt_token", token);
+      localStorage.setItem("username", userName);
 
       alert("로그인 성공!");
       location.href = "dashboard.html";
@@ -132,7 +147,8 @@ async function loadPosts() {
 
   try {
     const response = await window.api("/api/board");
-    const posts = response.data;
+    const data = unwrapResponse(response);
+    const posts = Array.isArray(data) ? data : [];
 
     list.innerHTML =
       posts
@@ -159,20 +175,18 @@ async function createPost(event) {
   const content = document.getElementById("post-content")?.value?.trim();
 
   try {
-    const data = await window.api("/api/board", {
+    await window.api("/api/board", {
       method: "POST",
       body: JSON.stringify({ title, content }),
     });
 
     alert("게시글이 작성됐어.");
-    loadPosts();
+    await loadPosts();
 
     const form = event.target;
     if (form && typeof form.reset === "function") {
       form.reset();
     }
-
-    return data;
   } catch (error) {
     alert(error.message);
   }
@@ -187,10 +201,10 @@ async function loadCommunityInfo() {
 
   try {
     const response = await window.api("/api/community/info");
-    const data = response.data;
+    const data = unwrapResponse(response) || {};
 
     infoDiv.innerHTML = `
-      <strong>서버:</strong> ${escapeHtml(data.communityName)} <br>
+      <strong>서버:</strong> ${escapeHtml(data.communityName || "Troll Club")} <br>
       <strong>현재 멤버 수:</strong> ${Number(data.membersCount || 0)}명
     `;
   } catch (error) {
