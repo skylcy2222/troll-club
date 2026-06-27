@@ -1,291 +1,185 @@
-:root {
-  --primary: #050505;
-  --text: #f4f4f4;
-  --accent: #ffffff;
-  --card-bg: rgba(255, 255, 255, 0.04);
-  --nav-bg: rgba(0, 0, 0, 0.72);
-  --line: rgba(255, 255, 255, 0.14);
-  --line-strong: rgba(255, 255, 255, 0.24);
-  --shadow: 0 18px 60px rgba(0, 0, 0, 0.45);
-}
-
-* {
-  box-sizing: border-box;
-}
-
-html, body {
-  min-height: 100%;
-}
+/* ===== Motion Enhancements ===== */
 
 body {
-  margin: 0;
-  color: var(--text);
-  background:
-    radial-gradient(circle at top, rgba(255, 255, 255, 0.06), transparent 30%),
-    linear-gradient(180deg, #050505 0%, #090909 55%, #050505 100%);
-  font-family: "Segoe UI", Arial, sans-serif;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  min-height: 100vh;
-  overflow-x: hidden;
-  position: relative;
+  animation: pageFadeIn 0.55s ease both;
 }
 
-body::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  background-image:
-    linear-gradient(rgba(255, 255, 255, 0.06) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.06) 1px, transparent 1px);
-  background-size: 42px 42px;
-  opacity: 0.22;
-  mask-image: radial-gradient(circle at center, black 35%, transparent 100%);
-}
-
-body::after {
-  content: "";
-  position: fixed;
-  inset: -20%;
-  pointer-events: none;
-  background: conic-gradient(
-    from 180deg at 50% 50%,
-    transparent 0 15%,
-    rgba(255, 255, 255, 0.05) 25%,
-    transparent 35% 100%
-  );
-  filter: blur(70px);
-  opacity: 0.35;
-  animation: drift 18s linear infinite;
-}
-
-@keyframes drift {
-  0% { transform: translate3d(-2%, -2%, 0) rotate(0deg); }
-  50% { transform: translate3d(2%, 1%, 0) rotate(180deg); }
-  100% { transform: translate3d(-2%, -2%, 0) rotate(360deg); }
+@keyframes pageFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 nav {
-  width: min(1100px, calc(100% - 32px));
-  margin: 18px auto 0;
-  padding: 16px 18px;
-  border: 1px solid var(--line);
-  background: var(--nav-bg);
-  border-radius: 22px;
-  backdrop-filter: blur(12px);
-  box-shadow: var(--shadow);
-  position: sticky;
-  top: 16px;
-  z-index: 10;
-  text-align: center;
+  animation: navDrop 0.7s ease both;
 }
 
-nav a {
-  color: rgba(255, 255, 255, 0.7);
-  text-decoration: none;
-  margin: 0 12px;
-  font-weight: 700;
-  padding-bottom: 6px;
-  position: relative;
-  transition: 0.25s ease;
-}
-
-nav a:hover,
-nav a.active {
-  color: #fff;
-}
-
-nav a::after {
-  content: "";
-  position: absolute;
-  width: 0;
-  height: 2px;
-  left: 50%;
-  bottom: 0;
-  background: var(--accent);
-  transition: all 0.25s ease;
-}
-
-nav a:hover::after,
-nav a.active::after {
-  width: 100%;
-  left: 0;
-}
-
-h1 {
-  font-size: clamp(2.2rem, 5vw, 4rem);
-  margin: 42px 0 22px;
-  text-align: center;
-  letter-spacing: -0.04em;
-  background: linear-gradient(270deg, #fff, #cfcfcf, #fff);
-  background-size: 300% 300%;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  animation: gradientShift 6s ease infinite;
-}
-
-@keyframes gradientShift {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
+@keyframes navDrop {
+  from {
+    opacity: 0;
+    transform: translateY(-14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .card {
-  width: min(880px, calc(100% - 32px));
-  margin: 0 auto 20px;
-  padding: 26px;
-  border-radius: 18px;
-  border: 1px solid var(--line);
-  background: var(--card-bg);
-  box-shadow: var(--shadow);
-  backdrop-filter: blur(10px);
-  transition: transform 0.25s ease, border-color 0.25s ease, background 0.25s ease;
+  animation: cardRise 0.7s ease both;
+}
+
+.card:nth-of-type(1) { animation-delay: 0.05s; }
+.card:nth-of-type(2) { animation-delay: 0.12s; }
+.card:nth-of-type(3) { animation-delay: 0.19s; }
+
+@keyframes cardRise {
+  from {
+    opacity: 0;
+    transform: translateY(18px) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
 
 .card:hover {
-  transform: translateY(-4px);
-  border-color: var(--line-strong);
-  background: rgba(255, 255, 255, 0.06);
+  transform: translateY(-6px) scale(1.01);
 }
 
-.card h3 {
-  margin-top: 0;
-  margin-bottom: 14px;
+.btn {
+  position: relative;
+  overflow: hidden;
 }
 
-.card p {
-  line-height: 1.7;
+.btn::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -120%;
+  width: 60%;
+  height: 100%;
+  background: linear-gradient(
+    120deg,
+    transparent,
+    rgba(255, 255, 255, 0.55),
+    transparent
+  );
+  transform: skewX(-20deg);
+  transition: left 0.55s ease;
 }
 
-.form-layout {
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-  margin-top: 18px;
+.btn:hover::before {
+  left: 160%;
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 26px rgba(255, 255, 255, 0.08);
+}
+
+.btn:active {
+  transform: translateY(0);
+  scale: 0.99;
 }
 
 input[type="text"],
 input[type="password"],
 textarea,
 input[type="color"] {
-  width: 100%;
-  padding: 12px 14px;
-  box-sizing: border-box;
-  border: 1px solid var(--line);
-  border-radius: 12px;
-  background: rgba(0, 0, 0, 0.28);
-  color: var(--text);
-  font-size: 1rem;
-  outline: none;
+  transition:
+    border-color 0.22s ease,
+    box-shadow 0.22s ease,
+    transform 0.22s ease,
+    background 0.22s ease;
 }
 
-textarea {
-  resize: vertical;
-  min-height: 120px;
-}
-
-input:focus,
-textarea:focus {
-  border-color: var(--line-strong);
-}
-
-.btn {
-  padding: 12px 18px;
-  border: 1px solid transparent;
-  border-radius: 12px;
-  background: #fff;
-  color: #000;
-  font-weight: 800;
-  cursor: pointer;
-  flex: 1;
-  transition: transform 0.2s ease, opacity 0.2s ease, border-color 0.2s ease;
-}
-
-.btn:hover {
+input[type="text"]:focus,
+input[type="password"]:focus,
+textarea:focus,
+input[type="color"]:focus {
+  box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.08);
   transform: translateY(-1px);
-  opacity: 0.92;
 }
 
-.btn.outline {
-  background: transparent;
-  border: 1px solid var(--line-strong);
-  color: #fff;
+body::before {
+  animation: gridDrift 30s linear infinite;
 }
 
-.btn.small {
-  padding: 8px 12px;
-  font-size: 0.9rem;
-}
-
-.color-picker {
-  display: grid;
-  gap: 8px;
-  margin-bottom: 16px;
-}
-
-.color-picker label {
-  color: rgba(255, 255, 255, 0.82);
-  font-size: 0.95rem;
-}
-
-#user-display {
-  margin-top: 4px;
-  margin-bottom: 8px;
-}
-
-.post-item {
-  padding: 16px 0;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.post-item:last-child {
-  border-bottom: none;
-}
-
-.post-head {
-  display: flex;
-  justify-content: space-between;
-  gap: 16px;
-  align-items: baseline;
-}
-
-.post-head h4 {
-  margin: 0;
-}
-
-.post-item p {
-  margin: 10px 0;
-  color: rgba(255, 255, 255, 0.9);
-}
-
-.post-meta {
-  display: flex;
-  justify-content: space-between;
-  gap: 12px;
-  align-items: center;
-  color: rgba(255, 255, 255, 0.72);
-  font-size: 0.92rem;
-}
-
-@media (max-width: 720px) {
-  nav {
-    padding: 14px 12px;
+@keyframes gridDrift {
+  from {
+    transform: translate3d(0, 0, 0);
   }
-
-  nav a {
-    display: inline-block;
-    margin: 6px 8px;
+  to {
+    transform: translate3d(-42px, -42px, 0);
   }
+}
 
-  .card {
-    padding: 20px;
+body::after {
+  animation: glowDrift 18s linear infinite;
+}
+
+@keyframes glowDrift {
+  0% {
+    transform: translate3d(-2%, -2%, 0) rotate(0deg);
   }
+  50% {
+    transform: translate3d(2%, 1%, 0) rotate(180deg);
+  }
+  100% {
+    transform: translate3d(-2%, -2%, 0) rotate(360deg);
+  }
+}
 
-  .post-head,
-  .post-meta {
-    flex-direction: column;
-    align-items: flex-start;
+/* 카드 안 제목도 살짝 살아나게 */
+.card h3 {
+  position: relative;
+  display: inline-block;
+}
+
+.card h3::after {
+  content: "";
+  display: block;
+  height: 1px;
+  width: 0;
+  margin-top: 8px;
+  background: rgba(255, 255, 255, 0.45);
+  transition: width 0.35s ease;
+}
+
+.card:hover h3::after {
+  width: 100%;
+}
+
+/* 로그인 폼 살짝 떠오르는 느낌 */
+.form-layout {
+  animation: formPop 0.65s ease both;
+}
+
+@keyframes formPop {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 모션 줄이기 설정을 존중 */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
   }
 }

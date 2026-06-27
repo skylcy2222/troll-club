@@ -83,73 +83,46 @@ function updateNav() {
 
 // [Home] 회원가입 & 로그인
 function initAuth() {
-    const form = document.getElementById("auth-form");
-    if (!form) return;
+  const form = document.getElementById("auth-form");
+  if (!form) return;
 
-    form.addEventListener("submit", async (e) => {
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
 
-        e.preventDefault();
+    const action = e.submitter?.value || "login";
 
-        const action = e.submitter.value;
+    const username = document.getElementById("username")?.value?.trim();
+    const email = document.getElementById("email")?.value?.trim();
+    const password = document.getElementById("password")?.value?.trim();
 
-        const username = document.getElementById("username").value.trim();
-        const email = document.getElementById("email").value.trim();
-        const password = document.getElementById("password").value.trim();
+    try {
+      let body;
 
-        try {
+      if (action === "register") {
+        body = { username, email, password };
+      } else {
+        body = { email, password };
+      }
 
-            let body;
+      const response = await window.api(`/api/auth/${action}`, {
+        method: "POST",
+        body: JSON.stringify(body),
+      });
 
-            if (action === "register") {
+      if (action === "register") {
+        alert(response.message || "회원가입 성공! 이제 로그인해.");
+        return;
+      }
 
-                body = {
-                    username,
-                    email,
-                    password,
-                };
+      localStorage.setItem("jwt_token", response.data.accessToken);
+      localStorage.setItem("username", response.data.user.username);
 
-            } else {
-
-                body = {
-                    email,
-                    password,
-                };
-
-            }
-
-            const response = await window.api(`/api/auth/${action}`, {
-                method: "POST",
-                body: JSON.stringify(body),
-            });
-
-            if (action === "register") {
-
-                alert("회원가입 성공!\n이제 로그인해.");
-
-                return;
-            }
-
-            localStorage.setItem(
-                "jwt_token",
-                response.data.accessToken
-            );
-
-            localStorage.setItem(
-                "username",
-                response.data.user.username
-            );
-
-            alert("로그인 성공!");
-
-            location.href = "dashboard.html";
-
-        } catch (err) {
-
-            alert(err.message);
-
-        }
-
-    });
+      alert("로그인 성공!");
+      location.href = "dashboard.html";
+    } catch (err) {
+      alert(err.message);
+    }
+  });
 }
 
 // [Board] 게시글 불러오기
