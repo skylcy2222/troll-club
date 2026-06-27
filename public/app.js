@@ -83,33 +83,73 @@ function updateNav() {
 
 // [Home] 회원가입 & 로그인
 function initAuth() {
-  const form = document.getElementById("auth-form");
-  if (!form) return;
+    const form = document.getElementById("auth-form");
+    if (!form) return;
 
-  form.addEventListener("submit", async (e) => {
-    e.preventDefault();
+    form.addEventListener("submit", async (e) => {
 
-    const username = document.getElementById("username")?.value?.trim();
-    const password = document.getElementById("password")?.value?.trim();
-    const action = e.submitter?.value || "login"; // login or register
+        e.preventDefault();
 
-    try {
-      const data = await window.api(`/api/auth/${action}`, {
-        method: "POST",
-        body: JSON.stringify({ username, password }),
-      });
+        const action = e.submitter.value;
 
-      alert(data.message || "완료");
+        const username = document.getElementById("username").value.trim();
+        const email = document.getElementById("email").value.trim();
+        const password = document.getElementById("password").value.trim();
 
-      if (action === "login") {
-        localStorage.setItem("jwt_token", data.token);
-        localStorage.setItem("username", data.user.username);
-        window.location.reload();
-      }
-    } catch (error) {
-      alert(error.message);
-    }
-  });
+        try {
+
+            let body;
+
+            if (action === "register") {
+
+                body = {
+                    username,
+                    email,
+                    password,
+                };
+
+            } else {
+
+                body = {
+                    email,
+                    password,
+                };
+
+            }
+
+            const response = await window.api(`/api/auth/${action}`, {
+                method: "POST",
+                body: JSON.stringify(body),
+            });
+
+            if (action === "register") {
+
+                alert("회원가입 성공!\n이제 로그인해.");
+
+                return;
+            }
+
+            localStorage.setItem(
+                "jwt_token",
+                response.data.accessToken
+            );
+
+            localStorage.setItem(
+                "username",
+                response.data.user.username
+            );
+
+            alert("로그인 성공!");
+
+            location.href = "dashboard.html";
+
+        } catch (err) {
+
+            alert(err.message);
+
+        }
+
+    });
 }
 
 // [Board] 게시글 불러오기
@@ -118,7 +158,8 @@ async function loadPosts() {
   if (!list) return;
 
   try {
-    const posts = await window.api("/api/board");
+    const response = await window.api("/api/board");
+    const posts = response.data;
 
     list.innerHTML =
       posts
@@ -172,7 +213,8 @@ async function loadCommunityInfo() {
   if (!infoDiv) return;
 
   try {
-    const data = await window.api("/api/community/info");
+    const response = await window.api("/api/community/info");
+    const data = response.data;
 
     infoDiv.innerHTML = `
       <strong>서버:</strong> ${escapeHtml(data.communityName)} <br>
